@@ -3,7 +3,10 @@
 
 (function () {
     "use strict";
-    var mapLink,
+    var clearLink,
+        filterLink,
+        listLink,
+        mapLink,
         categorizedHotels,
         hotelsNotInBellevueOrSeattle,
         hotels = [
@@ -220,21 +223,23 @@
 
 
 
-    function addHotelsToList($list, hotels) {
+    function addHotelsToList($list, hotels, fullInfo) {
         var i,
             hotel;
 
+        $list.children().remove();
         for (i = 0; i < hotels.length; i += 1) {
             hotel = hotels[i];
-            $list.append('<li>' + hotel.name + '</li>');
+            if (fullInfo) {
+                $list.append('<li>' + hotel.name + " " + hotel.city + " " + hotel.state + " " + hotel.rating + '</li>');
+            } else {
+                $list.append('<li>' + hotel.name + '</li>');
+            }
         }
     }
 
     function showLowQualityHotels(hotels) {
-        var hotel,
-            i,
-            $categoryList = $("#low ul");
-
+        var $categoryList = $("#low ul");
         addHotelsToList($categoryList, hotels);
     }
 
@@ -250,6 +255,11 @@
 
     function isLowQuality(hotel) {
         return hotel.category === "Low Quality";
+    }
+
+    function isInFilterCity(hotel) {
+        var city = $("#listCities option:selected").text();
+        return hotel.city === city;
     }
 
     function isMediumQuality(hotel) {
@@ -273,10 +283,6 @@
         return hotel;
     }
 
-
-
-    console.log(categorizedHotels);
-
     function isNotInBellevueOrSeattle(hotel) {
         if (hotel.city === "Bellevue" || hotel.city === "Seattle") {
             return false;
@@ -285,6 +291,50 @@
         }
     }
 
+    function addCitiesToFilterSelection(hotels) {
+        var hits = [],
+            cities = [],
+            i;
+
+        for (i = 0; i < hotels.length; i += 1) {
+            if (!(hits[hotels[i].city])) {
+                hits[hotels[i].city] = true;
+                cities.push(hotels[i].city);
+            }
+        }
+
+        $.each(cities, function (index, value) {
+            $('#listCities').append($('<option/>', {
+                value: value,
+                text : value
+            }));
+        });
+    }
+
+    function listHotels() {
+        var $list = $("#listedHotels ul");
+
+        $("#categorizedHotels").css("display", "none");
+        $("#listedHotels").css("display", "block");
+        addHotelsToList($list, hotels, true);
+    }
+
+    function clearHotels() {
+        $("#categorizedHotels").css("display", "none");
+        $("#listedHotels").css("display", "none");
+    }
+
+    function filterHotels() {
+        var city,
+            filteredHotels,
+            $list = $("#listedHotels ul");
+
+
+        $("#categorizedHotels").css("display", "none");
+        $("#listedHotels").css("display", "block");
+        filteredHotels = hotels.filter(isInFilterCity);
+        addHotelsToList($list, filteredHotels, true);
+    }
     function showHotelsByCategory() {
         var lowHotels,
             mediumHotels,
@@ -293,6 +343,8 @@
         lowHotels = hotels.filter(isLowQuality);
         mediumHotels = hotels.filter(isMediumQuality);
         highHotels = hotels.filter(isHighQuality);
+        $("#categorizedHotels").css("display", "block");
+        $("#listedHotels").css("display", "none");
 
         showLowQualityHotels(lowHotels);
         showMediumQualityHotels(mediumHotels);
@@ -301,6 +353,16 @@
     mapLink = document.getElementById("mapHotels");
     mapLink.addEventListener("click", showHotelsByCategory);
 
+    listLink = document.getElementById("listHotels");
+    listLink.addEventListener("click", listHotels);
+
+    filterLink = document.getElementById("filterHotels");
+    filterLink.addEventListener("click", filterHotels);
+
+    clearLink = document.getElementById("clearHotels");
+    clearLink.addEventListener("click", clearHotels);
+
+    addCitiesToFilterSelection(hotels);
 
 }());
 

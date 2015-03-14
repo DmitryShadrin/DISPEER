@@ -48,3 +48,11 @@ li {
 li:nth-child(odd) {
     background-color: #F2E8E6;
 }
+
+#categorizedHotels {
+    display: none;
+}
+
+#listedHotels {
+    display: none;
+}
