@@ -1,0 +1,50 @@
+
+button {
+    width: 75px;
+    background-color: #c2c78b;
+    border: 1px solid #6d7225;
+    border-radius: 2px;
+    color: black;
+}
+
+#menu {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#low {
+    float: left;
+}
+
+.category {
+       display: inline-block;
+    float: left;
+    width: 300px;
+    padding: 5px;
+}
+
+
+
+
+
+#pageWrapper {
+    margin-left: 20px;
+    margin-right: 20px;
+
+}
+
+body {
+    background-color: c2c78b;
+    font-family: sans-serif;
+}
+
+
+li {
+    list-style: none;
+    margin: 2px;
+}
+li:nth-child(odd) {
+    background-color: #F2E8E6;
+}
